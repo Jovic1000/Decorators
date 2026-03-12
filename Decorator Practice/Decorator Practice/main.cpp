@@ -12,11 +12,6 @@ private:
 
 class HealthBase : public IHealth
 {
-	virtual void Add() override {}
-};
-
-class Decorator : public IHealth
-{
 public:
 
 	void Add() override
@@ -24,11 +19,11 @@ public:
 		std::cout << "Base\n";
 	}
 
-	Decorator(IHealth* health) : m_health(health)
+	HealthBase(IHealth* health) : m_health(health)
 	{
 	}
 
-	virtual ~Decorator()
+	virtual ~HealthBase()
 	{
 		std::cout << "Deleted Base" << std::endl;
 		if (m_health)
@@ -42,7 +37,7 @@ protected:
 	IHealth* m_health;
 };
 
-class PlayerHealthDecorator : public Decorator
+class PlayerHealthDecorator : public HealthBase
 {
 public:
 
@@ -54,7 +49,7 @@ public:
 		m_health->Add();
 	}
 
-	PlayerHealthDecorator(IHealth* health) : Decorator(health), m_healthValue(100)
+	PlayerHealthDecorator(IHealth* health) : HealthBase(health), m_healthValue(100)
 	{
 	}
 
@@ -63,7 +58,7 @@ private:
 	int m_healthValue;
 };
 
-class ShieldDecorator : public Decorator
+class ShieldDecorator : public HealthBase
 {
 public:
 
@@ -75,7 +70,7 @@ public:
 		m_health->Add();
 	}
 
-	ShieldDecorator(IHealth* health) : Decorator(health), m_shield(0)
+	ShieldDecorator(IHealth* health) : HealthBase(health), m_shield(0)
 	{
 	}
 
@@ -86,7 +81,7 @@ private:
 
 int main()
 {
-	IHealth* playerHealth = new Decorator(nullptr);
+	IHealth* playerHealth = new HealthBase(nullptr);
 	playerHealth = new PlayerHealthDecorator(playerHealth);
 	playerHealth->Add();
 
@@ -94,10 +89,7 @@ int main()
 	playerHealth->Add();
 
 	delete playerHealth;
-
-	int i = 7;
-
-	std::cout << "\n\n" << i << std::endl;
+	playerHealth = nullptr;
 	system("pause");
 	return 0;
 }
